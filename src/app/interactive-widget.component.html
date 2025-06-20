@@ -1,0 +1,21 @@
+<div class="widget-container">
+  <h1>Interactive Widget</h1>
+  <div class="rocket-widget"
+       (mouseenter)="onHover()"
+       (mouseleave)="onLeave()"
+       (click)="onClick()">
+    <div class="rocket-animation" [class.rocket-hovered]="hovered" [class.rocket-clicked]="clicked">
+      <span class="rocket">🚀</span>
+    </div>
+    <div class="rocket-message">
+      <span *ngIf="!hovered && !clicked">Hover over the rocket!</span>
+      <span *ngIf="hovered && !clicked">Ready for launch! Click the rocket!</span>
+      <span *ngIf="clicked">Blast off! 🚀</span>
+    </div>
+  </div>
+  <div class="rocket-stats">
+    <span>Hovers: {{ hoverCount }}</span> | <span>Clicks: {{ clickCount }}</span>
+  </div>
+  <button class="api-send-btn" (click)="sendActivity()" style="margin-top: 24px;">Send data to the API</button>
+  <div *ngIf="apiMessage" class="api-message">{{ apiMessage }}</div>
+</div>

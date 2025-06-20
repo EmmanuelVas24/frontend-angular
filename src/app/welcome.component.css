@@ -217,6 +217,19 @@ button:hover {
 .api-table tr:hover td {
   background: #e3f2fd;
 }
+.welcome-widget-monitoring-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 36px;
+}
+.welcome-widget-section, .welcome-monitoring-section {
+  flex: 1 1 350px;
+  min-width: 320px;
+  max-width: 480px;
+}
 @media (max-width: 700px) {
   .api-form-row {
     flex-direction: column;
@@ -225,5 +238,12 @@ button:hover {
   .api-url-input {
     margin: 0;
     width: 100%;
+  }
+}
+@media (max-width: 900px) {
+  .welcome-widget-monitoring-row {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
   }
 }

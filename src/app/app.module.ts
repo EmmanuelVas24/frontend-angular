@@ -10,12 +10,16 @@ import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InteractiveWidgetComponent } from './interactive-widget.component';
+import { MonitoringComponent } from './monitoring.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GetdataComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    InteractiveWidgetComponent,
+    MonitoringComponent
   ],
   imports: [
     BrowserModule,

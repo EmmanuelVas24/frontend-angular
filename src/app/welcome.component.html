@@ -3,6 +3,8 @@
   <ul class="navbar-links">
     <li><a routerLink="/home">Home</a></li>
     <li><a routerLink="/getdata">Get Data</a></li>
+    <li><a routerLink="/interactive-widget">Interactive Widget</a></li>
+    <li><a routerLink="/monitoring">Monitoring</a></li>
     <li><a href="#">About</a></li>
     <li><a href="#">Contact</a></li>
   </ul>
@@ -70,4 +72,13 @@
     </ng-template>
   </div>
   <div class="api-error" *ngIf="error">Error: {{ error }}</div>
+</div>
+
+<div class="welcome-widget-monitoring-row">
+  <div class="welcome-widget-section">
+    <app-interactive-widget></app-interactive-widget>
+  </div>
+  <div class="welcome-monitoring-section">
+    <app-monitoring></app-monitoring>
+  </div>
 </div>
