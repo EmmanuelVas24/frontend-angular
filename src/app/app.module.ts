@@ -9,6 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { CommonModule } from '@angular/common';
     AppRoutingModule,
     NgbModule,
     CommonModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
   exports: [RouterModule],

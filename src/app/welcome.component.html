@@ -1,2 +1,52 @@
-<h1>Welcome to the App!</h1>
-<button (click)="goToGetData()">Go to Get Data</button>
+<nav class="navbar">
+  <div class="navbar-brand">Friendly API</div>
+  <ul class="navbar-links">
+    <li><a routerLink="/home">Home</a></li>
+    <li><a routerLink="/getdata">Get Data</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="welcome-container">
+  <h1>API Tester</h1>
+  <p class="welcome-script">
+    Enter an API endpoint, select the method, and send requests just like Postman!<br />
+    View the response below in real time.
+  </p>
+  <form class="api-form" (ngSubmit)="sendRequest()">
+    <div class="api-form-row">
+      <select [(ngModel)]="method" name="method" required>
+        <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
+      </select>
+      <input
+        type="text"
+        [(ngModel)]="url"
+        name="url"
+        placeholder="https://api.example.com/data"
+        required
+        class="api-url-input"
+      />
+      <button type="submit" class="api-send-btn">Send</button>
+    </div>
+    <div class="api-form-row" style="align-items:center; gap: 10px; margin-top: 8px;">
+      <label style="display:flex; align-items:center; cursor:pointer; font-size:0.98rem;">
+        <input type="checkbox" [(ngModel)]="sendAsJson" name="sendAsJson" style="margin-right:6px;" />
+        Send as JSON
+      </label>
+      <span style="font-size:0.95rem; color:#1976d2;">({{ sendAsJson ? 'application/json' : 'text/plain' }})</span>
+    </div>
+    <textarea
+      *ngIf="method === 'POST' || method === 'PUT' || method === 'PATCH'"
+      [(ngModel)]="body"
+      name="body"
+      placeholder="Request body (JSON or text)"
+      class="api-body-input"
+    ></textarea>
+  </form>
+  <div class="api-response-section" *ngIf="response">
+    <h3>Response</h3>
+    <pre class="api-response">{{ response | json }}</pre>
+  </div>
+  <div class="api-error" *ngIf="error">Error: {{ error }}</div>
+</div>

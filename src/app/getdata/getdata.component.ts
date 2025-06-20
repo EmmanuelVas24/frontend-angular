@@ -15,6 +15,7 @@ export class tableclass{
 })
 export class GetdataComponent{
   table: tableclass[] = [];
+    static getData: any;
   constructor(
     private httpClient: HttpClient
   ){}
