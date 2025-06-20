@@ -190,6 +190,33 @@ button:hover {
 .api-send-btn:hover {
   background: #1565c0;
 }
+.api-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+  overflow: hidden;
+}
+.api-table th, .api-table td {
+  border: 1px solid #1976d2;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 1rem;
+}
+.api-table th {
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+}
+.api-table tr:nth-child(even) td {
+  background: #f5faff;
+}
+.api-table tr:hover td {
+  background: #e3f2fd;
+}
 @media (max-width: 700px) {
   .api-form-row {
     flex-direction: column;

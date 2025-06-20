@@ -46,7 +46,28 @@
   </form>
   <div class="api-response-section" *ngIf="response">
     <h3>Response</h3>
-    <pre class="api-response">{{ response | json }}</pre>
+    <ng-container *ngIf="isJsonArray(response); else notArray">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th *ngFor="let key of getKeys(response)">{{ key }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of response">
+            <td *ngFor="let key of getKeys(response)">{{ row[key] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #notArray>
+      <pre class="api-response" style="white-space: pre-wrap; tab-size: 2;">
+        <ng-container *ngIf="isJson(response); else plainText">
+{{ formatJson(response) }}
+        </ng-container>
+        <ng-template #plainText>{{ response }}</ng-template>
+      </pre>
+    </ng-template>
   </div>
   <div class="api-error" *ngIf="error">Error: {{ error }}</div>
 </div>

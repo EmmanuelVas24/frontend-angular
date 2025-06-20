@@ -60,5 +60,20 @@ export class WelcomeComponent {
       .catch(err => this.error = err.message || 'Request failed.');
   }
 
-  
+  isJson(val: any): boolean {
+    return typeof val === 'object' && val !== null;
+  }
+
+  formatJson(val: any): string {
+    return JSON.stringify(val, null, 2);
+  }
+
+  isJsonArray(val: any): boolean {
+    return Array.isArray(val) && val.length > 0 && typeof val[0] === 'object';
+  }
+
+  getKeys(val: any[]): string[] {
+    return val && val.length > 0 ? Object.keys(val[0]) : [];
+  }
+
 }
