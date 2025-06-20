@@ -4,6 +4,7 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 import { AppRoutingModule, routes } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GetdataComponent } from './getdata/getdata.component';
+import { WelcomeComponent } from './welcome.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -12,7 +13,8 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
-    GetdataComponent
+    GetdataComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 
 export class tableclass{
   constructor(
-    public description: string
+    public id: string
   ){}
 }
 
@@ -24,7 +24,7 @@ export class GetdataComponent{
   }
 
   getData(){
-    this.httpClient.get<any>('http://[::1]:3000/activities').subscribe(
+    this.httpClient.get<any>('http://[::1]:3000/mogomodels').subscribe(
       response => {
         console.log(response);
         this.table = response;
