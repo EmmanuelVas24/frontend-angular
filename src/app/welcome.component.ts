@@ -17,6 +17,7 @@ export class WelcomeComponent {
   error: string = '';
   methods: string[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
   sendAsJson: boolean = true;
+  tablePage: number = 0;
 
   constructor(private router: Router) {
     setInterval(() => {
@@ -31,6 +32,7 @@ export class WelcomeComponent {
   sendRequest() {
     this.response = null;
     this.error = '';
+    this.tablePage = 0; // Reset to first page on new request
     const options: RequestInit = {
       method: this.method,
       headers: { 'Content-Type': this.sendAsJson ? 'application/json' : 'text/plain' },
@@ -74,6 +76,13 @@ export class WelcomeComponent {
 
   getKeys(val: any[]): string[] {
     return val && val.length > 0 ? Object.keys(val[0]) : [];
+  }
+
+  getValue(row: unknown, key: string): any {
+    if (row && typeof row === 'object' && row !== null) {
+      return (row as Record<string, any>)[key];
+    }
+    return '';
   }
 
 }
