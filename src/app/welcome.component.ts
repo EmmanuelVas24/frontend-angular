@@ -18,6 +18,8 @@ export class WelcomeComponent {
   methods: string[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
   sendAsJson: boolean = true;
   tablePage: number = 0;
+  sortKey: string = '';
+  sortDir: 'asc' | 'desc' = 'asc';
 
   constructor(private router: Router) {
     setInterval(() => {
@@ -83,6 +85,45 @@ export class WelcomeComponent {
       return (row as Record<string, any>)[key];
     }
     return '';
+  }
+
+  saveTablePageAsJson() {
+    if (!Array.isArray(this.response)) return;
+    const start = this.tablePage * 10;
+    const end = (this.tablePage + 1) * 10;
+    const pageData = this.response.slice(start, end);
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pageData, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `api-table-page-${this.tablePage + 1}.json`);
+    document.body.appendChild(dlAnchorElem);
+    dlAnchorElem.click();
+    document.body.removeChild(dlAnchorElem);
+  }
+
+  sortBy(key: string) {
+    if (this.sortKey === key) {
+      this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortKey = key;
+      this.sortDir = 'asc';
+    }
+    this.sortRows();
+  }
+
+  sortRows() {
+    if (!Array.isArray(this.response)) return;
+    const rows = [...this.response];
+    if (this.sortKey) {
+      rows.sort((a, b) => {
+        const av = this.getValue(a, this.sortKey);
+        const bv = this.getValue(b, this.sortKey);
+        if (av === bv) return 0;
+        if (this.sortDir === 'asc') return av > bv ? 1 : -1;
+        return av < bv ? 1 : -1;
+      });
+    }
+    this.response = rows;
   }
 
 }

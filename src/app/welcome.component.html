@@ -52,7 +52,12 @@
       <table class="api-table">
         <thead>
           <tr>
-            <th *ngFor="let key of getKeys(response)">{{ key }}</th>
+            <th *ngFor="let key of getKeys(response)">
+              <span (click)="sortBy(key)" style="cursor:pointer; user-select:none;">
+                {{ key }}
+                <span *ngIf="sortKey === key">{{ sortDir === 'asc' ? '▲' : '▼' }}</span>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +67,7 @@
         </tbody>
       </table>
       <div class="api-table-pagination" style="margin-top:8px; text-align:right; display:flex; gap:8px; justify-content:flex-end;">
+        <button (click)="saveTablePageAsJson()" style="margin-right:auto;">Save Page as JSON</button>
         <button (click)="tablePage = tablePage - 1" [disabled]="tablePage === 0">Previous</button>
         <button (click)="tablePage = tablePage + 1" [disabled]="(tablePage+1)*10 >= response.length">Next</button>
       </div>
