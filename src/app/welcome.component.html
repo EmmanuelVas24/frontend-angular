@@ -20,7 +20,7 @@
 </nav>
 
 <div class="welcome-container">
-  <h1>Reddit-like Posts</h1>
+  <h1>Posts</h1>
   <div *ngIf="error" class="api-error">Error: {{ error }}</div>
   <div *ngIf="!posts">
     <p>Loading posts...</p>
@@ -36,14 +36,35 @@
       </div>
       <div class="reddit-post-body">{{ post.body }}</div>
       <div class="reddit-post-footer">
-        <span>Score: {{ post.score }}</span>
-        <button (click)="upvote(post)" class="reddit-vote-btn">▲</button>
-        <button (click)="downvote(post)" class="reddit-vote-btn">▼</button>
+        <span [ngStyle]="{'color': post.voteCount > 0 ? '#22c55e' : (post.voteCount < 0 ? '#ef4444' : '#222')}
+          " class="reddit-vote-count">
+          {{ post.voteCount }}
+        </span>
+        <button (click)="upvote(post)" class="reddit-vote-btn upvote">▲</button>
+        <button (click)="downvote(post)" class="reddit-vote-btn downvote">▼</button>
+        <button class="reddit-comments-btn" (click)="openComments(post)">
+          💬 {{ commentsByPost[post.id]?.length || 0 }} Comments
+        </button>
       </div>
-      <div class="reddit-comments" *ngIf="commentsByPost[post.id]">
-        <div class="reddit-comment" *ngFor="let comment of commentsByPost[post.id]">
-          <span class="reddit-comment-author">{{ comment.author }}:</span>
-          <span class="reddit-comment-body">{{ comment.body }}</span>
+      <div class="reddit-comments-modal" *ngIf="activeCommentsPostId === post.id">
+        <div class="reddit-comments-modal-backdrop" (click)="closeComments()"></div>
+        <div class="reddit-comments-modal-content">
+          <div class="reddit-comments-modal-header">
+            <span>Comments for: <b>{{ post.title }}</b></span>
+            <button class="reddit-comments-modal-close" (click)="closeComments()">&times;</button>
+          </div>
+          <div class="reddit-comments-list">
+            <div class="reddit-comment" *ngFor="let comment of commentsByPost[post.id]">
+              <span class="reddit-comment-author">{{ comment.author }}:</span>
+              <span class="reddit-comment-body">{{ comment.body }}</span>
+              <span class="reddit-comment-score" *ngIf="comment.voteCount !== undefined">
+                &nbsp;|&nbsp;Score: {{ comment.voteCount }}
+              </span>
+            </div>
+            <div *ngIf="!commentsByPost[post.id] || commentsByPost[post.id].length === 0" class="reddit-no-comments">
+              No comments yet.
+            </div>
+          </div>
         </div>
       </div>
     </div>

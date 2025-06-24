@@ -5,7 +5,7 @@ interface Post {
   title: string;
   body: string;
   author: string;
-  score: number;
+  voteCount: number;
   subredditId?: number;
 }
 
@@ -14,6 +14,7 @@ interface Comment {
   postId: number;
   author: string;
   body: string;
+  voteCount?: number;
 }
 
 interface Subreddit {
@@ -34,6 +35,7 @@ export class WelcomeComponent {
   subreddits: Subreddit[] = [];
   selectedSubreddit: number | '' = '';
   error: string = '';
+  activeCommentsPostId: number | null = null;
 
   constructor() {
     this.fetchSubreddits();
@@ -68,11 +70,13 @@ export class WelcomeComponent {
 
   filterBySubreddit() {
     if (!this.allPosts) return;
+    let filtered: Post[];
     if (!this.selectedSubreddit) {
-      this.posts = this.allPosts;
+      filtered = this.allPosts;
     } else {
-      this.posts = this.allPosts.filter(p => p.subredditId === this.selectedSubreddit);
+      filtered = this.allPosts.filter(p => p.subredditId === this.selectedSubreddit);
     }
+    this.posts = filtered;
   }
 
   fetchComments() {
@@ -95,12 +99,24 @@ export class WelcomeComponent {
   }
 
   upvote(post: Post) {
-    post.score++;
-    // Optionally: send PATCH/POST to backend
+    post.voteCount++;
+    fetch(`http://[::1]:3000/posts/${post.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ voteCount: post.voteCount })
+    }).catch(() => {});
   }
 
   downvote(post: Post) {
-    post.score--;
+    post.voteCount--;
     // Optionally: send PATCH/POST to backend
+  }
+
+  openComments(post: Post) {
+    this.activeCommentsPostId = post.id;
+  }
+
+  closeComments() {
+    this.activeCommentsPostId = null;
   }
 }
