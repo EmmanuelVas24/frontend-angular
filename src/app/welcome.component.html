@@ -1,94 +1,51 @@
 <nav class="navbar">
-  <div class="navbar-brand">Friendly API</div>
+  <div class="navbar-brand">Reddit Clone</div>
   <ul class="navbar-links">
     <li><a routerLink="/home">Home</a></li>
-    <li><a routerLink="/getdata">Get Data</a></li>
-    <li><a routerLink="/interactive-widget">Interactive Widget</a></li>
-    <li><a routerLink="/monitoring">Monitoring</a></li>
+    <li><a routerLink="/datalake">Data Lake</a></li>
     <li><a href="#">About</a></li>
     <li><a href="#">Contact</a></li>
   </ul>
+  <div class="navbar-subreddit-select" *ngIf="subreddits && subreddits.length">
+    <label for="subredditSelect" style="margin-right:6px; font-weight:500; color:#1976d2;">Subreddit:</label>
+    <select id="subredditSelect" [(ngModel)]="selectedSubreddit" (ngModelChange)="filterBySubreddit()"
+      style="padding:4px 10px; border-radius:5px; border:1px solid #b0c4de; font-size:1em; background:#f8fafd; color:#222;">
+      <option [ngValue]="''">All</option>
+      <option *ngFor="let sub of subreddits" [ngValue]="sub.id">{{ sub.name }}</option>
+    </select>
+    <button (click)="fetchPosts()" class="navbar-refresh-btn" title="Refresh posts">
+      <span style="font-size:1.3em; color:#1976d2;">&#x21bb;</span>
+    </button>
+  </div>
 </nav>
 
 <div class="welcome-container">
-  <h1>API Tester</h1>
-  <p class="welcome-script">
-    Enter an API endpoint, select the method, and send requests just like Postman!<br />
-    View the response below in real time.
-  </p>
-  <form class="api-form" (ngSubmit)="sendRequest()">
-    <div class="api-form-row">
-      <select [(ngModel)]="method" name="method" required>
-        <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
-      </select>
-      <input
-        type="text"
-        [(ngModel)]="url"
-        name="url"
-        placeholder="https://api.example.com/data"
-        required
-        class="api-url-input"
-      />
-      <button type="submit" class="api-send-btn">Send</button>
-    </div>
-    <div class="api-form-row" style="align-items:center; gap: 10px; margin-top: 8px;">
-      <label style="display:flex; align-items:center; cursor:pointer; font-size:0.98rem;">
-        <input type="checkbox" [(ngModel)]="sendAsJson" name="sendAsJson" style="margin-right:6px;" />
-        Send as JSON
-      </label>
-      <span style="font-size:0.95rem; color:#1976d2;">({{ sendAsJson ? 'application/json' : 'text/plain' }})</span>
-    </div>
-    <textarea
-      *ngIf="method === 'POST' || method === 'PUT' || method === 'PATCH'"
-      [(ngModel)]="body"
-      name="body"
-      placeholder="Request body (JSON or text)"
-      class="api-body-input"
-    ></textarea>
-  </form>
-  <div class="api-response-section" *ngIf="response">
-    <h3>Response</h3>
-    <ng-container *ngIf="isJsonArray(response); else notArray">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th *ngFor="let key of getKeys(response)">
-              <span (click)="sortBy(key)" style="cursor:pointer; user-select:none;">
-                {{ key }}
-                <span *ngIf="sortKey === key">{{ sortDir === 'asc' ? '▲' : '▼' }}</span>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of response | slice:tablePage*10:(tablePage+1)*10">
-            <td *ngFor="let key of getKeys(response)">{{ getValue(row, key) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="api-table-pagination" style="margin-top:8px; text-align:right; display:flex; gap:8px; justify-content:flex-end;">
-        <button (click)="saveTablePageAsJson()" style="margin-right:auto;">Save Page as JSON</button>
-        <button (click)="tablePage = tablePage - 1" [disabled]="tablePage === 0">Previous</button>
-        <button (click)="tablePage = tablePage + 1" [disabled]="(tablePage+1)*10 >= response.length">Next</button>
+  <h1>Reddit-like Posts</h1>
+  <div *ngIf="error" class="api-error">Error: {{ error }}</div>
+  <div *ngIf="!posts">
+    <p>Loading posts...</p>
+  </div>
+  <div *ngIf="posts && posts.length === 0">
+    <p>No posts found.</p>
+  </div>
+  <div *ngIf="posts && posts.length > 0">
+    <div class="reddit-post" *ngFor="let post of posts">
+      <div class="reddit-post-header">
+        <span class="reddit-post-title">{{ post.title }}</span>
+        <span class="reddit-post-author">by {{ post.author }}</span>
       </div>
-    </ng-container>
-    <ng-template #notArray>
-      <pre class="api-response" style="white-space: pre-wrap; tab-size: 2;">
-        <ng-container *ngIf="isJson(response); else plainText">
-{{ formatJson(response) }}
-        </ng-container>
-        <ng-template #plainText>{{ response }}</ng-template>
-      </pre>
-    </ng-template>
-  </div>
-  <div class="api-error" *ngIf="error">Error: {{ error }}</div>
-</div>
-
-<div class="welcome-widget-monitoring-row">
-  <div class="welcome-widget-section">
-    <app-interactive-widget></app-interactive-widget>
-  </div>
-  <div class="welcome-monitoring-section">
-    <app-monitoring></app-monitoring>
+      <div class="reddit-post-body">{{ post.body }}</div>
+      <div class="reddit-post-footer">
+        <span>Score: {{ post.score }}</span>
+        <button (click)="upvote(post)" class="reddit-vote-btn">▲</button>
+        <button (click)="downvote(post)" class="reddit-vote-btn">▼</button>
+      </div>
+      <div class="reddit-comments" *ngIf="commentsByPost[post.id]">
+        <div class="reddit-comment" *ngFor="let comment of commentsByPost[post.id]">
+          <span class="reddit-comment-author">{{ comment.author }}:</span>
+          <span class="reddit-comment-body">{{ comment.body }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

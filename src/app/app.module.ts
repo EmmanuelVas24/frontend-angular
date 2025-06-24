@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InteractiveWidgetComponent } from './interactive-widget.component';
 import { MonitoringComponent } from './monitoring.component';
+import { DatalakeComponent } from './datalake.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MonitoringComponent } from './monitoring.component';
     GetdataComponent,
     WelcomeComponent,
     InteractiveWidgetComponent,
-    MonitoringComponent
+    MonitoringComponent,
+    DatalakeComponent
   ],
   imports: [
     BrowserModule,

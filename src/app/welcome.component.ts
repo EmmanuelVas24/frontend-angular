@@ -1,6 +1,25 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { GetdataComponent } from './getdata/getdata.component';
+
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+  author: string;
+  score: number;
+  subredditId?: number;
+}
+
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  body: string;
+}
+
+interface Subreddit {
+  id: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-welcome',
@@ -8,122 +27,80 @@ import { GetdataComponent } from './getdata/getdata.component';
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent {
-  today = new Date();
-  now = new Date();
-  method: string = 'GET';
-  url: string = '';
-  body: string = '';
-  response: any = null;
+  posts: Post[] | null = null;
+  allPosts: Post[] = [];
+  comments: Comment[] = [];
+  commentsByPost: { [postId: number]: Comment[] } = {};
+  subreddits: Subreddit[] = [];
+  selectedSubreddit: number | '' = '';
   error: string = '';
-  methods: string[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
-  sendAsJson: boolean = true;
-  tablePage: number = 0;
-  sortKey: string = '';
-  sortDir: 'asc' | 'desc' = 'asc';
 
-  constructor(private router: Router) {
-    setInterval(() => {
-      this.now = new Date();
-    }, 1000);
+  constructor() {
+    this.fetchSubreddits();
+    this.fetchPosts();
+    this.fetchComments();
   }
 
-  goToGetData() {
-    this.router.navigate(['/getdata']);
+  fetchSubreddits() {
+    fetch('http://[::1]:3000/subreddits')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch subreddits');
+        return res.json();
+      })
+      .then(data => this.subreddits = data)
+      .catch(() => {});
   }
 
-  sendRequest() {
-    this.response = null;
+  fetchPosts() {
     this.error = '';
-    this.tablePage = 0; // Reset to first page on new request
-    const options: RequestInit = {
-      method: this.method,
-      headers: { 'Content-Type': this.sendAsJson ? 'application/json' : 'text/plain' },
-    };
-    if (['POST', 'PUT', 'PATCH'].includes(this.method) && this.body) {
-      if (this.sendAsJson) {
-        try {
-          options.body = JSON.stringify(JSON.parse(this.body));
-        } catch (e) {
-          this.error = 'Invalid JSON in request body.';
-          return;
-        }
-      } else {
-        options.body = this.body;
-      }
+    this.posts = null;
+    fetch('http://[::1]:3000/posts')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch posts');
+        return res.json();
+      })
+      .then(data => {
+        this.allPosts = data;
+        this.filterBySubreddit();
+      })
+      .catch(err => this.error = err.message || 'Failed to fetch posts');
+  }
+
+  filterBySubreddit() {
+    if (!this.allPosts) return;
+    if (!this.selectedSubreddit) {
+      this.posts = this.allPosts;
+    } else {
+      this.posts = this.allPosts.filter(p => p.subredditId === this.selectedSubreddit);
     }
-    fetch(this.url, options)
-      .then(async res => {
-        const text = await res.text();
-        try {
-          return JSON.parse(text);
-        } catch {
-          return text;
+  }
+
+  fetchComments() {
+    fetch('http://[::1]:3000/comments')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch comments');
+        return res.json();
+      })
+      .then(data => {
+        this.comments = data;
+        this.commentsByPost = {};
+        for (const comment of this.comments) {
+          if (!this.commentsByPost[comment.postId]) {
+            this.commentsByPost[comment.postId] = [];
+          }
+          this.commentsByPost[comment.postId].push(comment);
         }
       })
-      .then(data => this.response = data)
-      .catch(err => this.error = err.message || 'Request failed.');
+      .catch(() => {});
   }
 
-  isJson(val: any): boolean {
-    return typeof val === 'object' && val !== null;
+  upvote(post: Post) {
+    post.score++;
+    // Optionally: send PATCH/POST to backend
   }
 
-  formatJson(val: any): string {
-    return JSON.stringify(val, null, 2);
+  downvote(post: Post) {
+    post.score--;
+    // Optionally: send PATCH/POST to backend
   }
-
-  isJsonArray(val: any): boolean {
-    return Array.isArray(val) && val.length > 0 && typeof val[0] === 'object';
-  }
-
-  getKeys(val: any[]): string[] {
-    return val && val.length > 0 ? Object.keys(val[0]) : [];
-  }
-
-  getValue(row: unknown, key: string): any {
-    if (row && typeof row === 'object' && row !== null) {
-      return (row as Record<string, any>)[key];
-    }
-    return '';
-  }
-
-  saveTablePageAsJson() {
-    if (!Array.isArray(this.response)) return;
-    const start = this.tablePage * 10;
-    const end = (this.tablePage + 1) * 10;
-    const pageData = this.response.slice(start, end);
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pageData, null, 2));
-    const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `api-table-page-${this.tablePage + 1}.json`);
-    document.body.appendChild(dlAnchorElem);
-    dlAnchorElem.click();
-    document.body.removeChild(dlAnchorElem);
-  }
-
-  sortBy(key: string) {
-    if (this.sortKey === key) {
-      this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortKey = key;
-      this.sortDir = 'asc';
-    }
-    this.sortRows();
-  }
-
-  sortRows() {
-    if (!Array.isArray(this.response)) return;
-    const rows = [...this.response];
-    if (this.sortKey) {
-      rows.sort((a, b) => {
-        const av = this.getValue(a, this.sortKey);
-        const bv = this.getValue(b, this.sortKey);
-        if (av === bv) return 0;
-        if (this.sortDir === 'asc') return av > bv ? 1 : -1;
-        return av < bv ? 1 : -1;
-      });
-    }
-    this.response = rows;
-  }
-
 }

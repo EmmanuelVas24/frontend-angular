@@ -5,12 +5,14 @@ import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome.component';
 import { InteractiveWidgetComponent } from './interactive-widget.component';
 import { MonitoringComponent } from './monitoring.component';
+import { DatalakeComponent } from './datalake.component';
 
 export const routes: Routes = [
   { path: 'home', component: WelcomeComponent },
   { path: 'getdata', component: GetdataComponent },
   { path: 'interactive-widget', component: InteractiveWidgetComponent },
   { path: 'monitoring', component: MonitoringComponent },
+  { path: 'datalake', component: DatalakeComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
 
