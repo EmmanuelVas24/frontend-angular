@@ -50,16 +50,20 @@
         <div class="reddit-comments-modal-backdrop" (click)="closeComments()"></div>
         <div class="reddit-comments-modal-content">
           <div class="reddit-comments-modal-header">
-            <span>Comments for: <b>{{ post.title }}</b></span>
             <button class="reddit-comments-modal-close" (click)="closeComments()">&times;</button>
           </div>
           <div class="reddit-comments-list">
             <div class="reddit-comment" *ngFor="let comment of commentsByPost[post.id]">
-              <span class="reddit-comment-author">{{ comment.author }}:</span>
-              <span class="reddit-comment-body">{{ comment.body }}</span>
-              <span class="reddit-comment-score" *ngIf="comment.voteCount !== undefined">
-                &nbsp;|&nbsp;Score: {{ comment.voteCount }}
+              <span class="reddit-comment-votes-row">
+                <button (click)="upvoteComment(comment)" class="reddit-vote-btn upvote">▲</button>
+                <span [ngStyle]="{'color': comment.voteCount > 0 ? '#22c55e' : (comment.voteCount < 0 ? '#ef4444' : '#222')}
+                  " class="reddit-vote-count" *ngIf="comment.voteCount !== undefined">
+                  {{ comment.voteCount }}
+                </span>
+                <button (click)="downvoteComment(comment)" class="reddit-vote-btn downvote">▼</button>
               </span>
+              <span class="reddit-comment-author">{{ comment.author }}</span>
+              <span class="reddit-comment-body">{{ comment.body }}</span>
             </div>
             <div *ngIf="!commentsByPost[post.id] || commentsByPost[post.id].length === 0" class="reddit-no-comments">
               No comments yet.

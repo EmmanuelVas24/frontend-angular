@@ -119,4 +119,24 @@ export class WelcomeComponent {
   closeComments() {
     this.activeCommentsPostId = null;
   }
+
+  upvoteComment(comment: Comment) {
+    if (typeof comment.voteCount !== 'number') comment.voteCount = 0;
+    comment.voteCount++;
+    fetch(`http://[::1]:3000/comments/${comment.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ voteCount: comment.voteCount })
+    }).catch(() => {});
+  }
+
+  downvoteComment(comment: Comment) {
+    if (typeof comment.voteCount !== 'number') comment.voteCount = 0;
+    comment.voteCount--;
+    fetch(`http://[::1]:3000/comments/${comment.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ voteCount: comment.voteCount })
+    }).catch(() => {});
+  }
 }

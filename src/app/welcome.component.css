@@ -424,10 +424,10 @@ button:hover {
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
-  padding: 32px 28px 24px 28px;
-  min-width: 340px;
-  max-width: 95vw;
-  max-height: 80vh;
+  padding: 24px 36px 32px 36px;
+  min-width: 480px;
+  max-width: 98vw;
+  max-height: 88vh;
   overflow-y: auto;
   animation: popIn 0.18s cubic-bezier(.4,2,.6,1) 1;
 }
@@ -437,11 +437,19 @@ button:hover {
 }
 .reddit-comments-modal-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: flex-end;
   font-size: 1.1em;
   font-weight: 500;
-  margin-bottom: 18px;
+  margin-bottom: 0;
+  min-height: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  padding: 8px 12px 0 0;
+  background: transparent;
+  z-index: 10;
 }
 .reddit-comments-modal-close {
   background: none;
@@ -452,11 +460,13 @@ button:hover {
   padding: 0 6px;
   border-radius: 4px;
   transition: background 0.12s;
+  align-self: flex-start;
 }
 .reddit-comments-modal-close:hover {
   background: #e3f0fc;
 }
 .reddit-comments-list {
+  margin-top: 0;
   max-height: 50vh;
   overflow-y: auto;
 }
@@ -465,6 +475,12 @@ button:hover {
   font-style: italic;
   margin-top: 12px;
   text-align: center;
+}
+.reddit-comment-votes-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 10px;
 }
 @media (max-width: 700px) {
   .api-form-row {
@@ -481,5 +497,11 @@ button:hover {
     flex-direction: column;
     gap: 24px;
     align-items: stretch;
+  }
+}
+@media (max-width: 600px) {
+  .reddit-comments-modal-content {
+    min-width: 98vw;
+    padding: 18px 4vw 18px 4vw;
   }
 }
