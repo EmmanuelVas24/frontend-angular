@@ -288,8 +288,8 @@ button:hover {
 .reddit-post-footer {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.98em;
+  gap: 8px;
+  justify-content: flex-start;
 }
 .reddit-vote-btn {
   background: none;
@@ -303,6 +303,17 @@ button:hover {
 }
 .reddit-vote-btn:hover {
   background: #e3f0fc;
+}
+.reddit-vote-btn.upvote,
+.reddit-vote-btn.downvote {
+  margin: 0;
+  padding: 2px 6px;
+  font-size: 1.1em;
+}
+.reddit-vote-count {
+  margin: 0 2px;
+  min-width: 28px;
+  text-align: center;
 }
 .reddit-vote-btn.upvote {
   color: #22c55e;

@@ -32,15 +32,14 @@
     <div class="reddit-post" *ngFor="let post of posts">
       <div class="reddit-post-header">
         <span class="reddit-post-title">{{ post.title }}</span>
-        <span class="reddit-post-author">by {{ post.author }}</span>
+        <span class="reddit-post-author">{{ post.author }}</span>
       </div>
       <div class="reddit-post-body">{{ post.body }}</div>
       <div class="reddit-post-footer">
-        <span [ngStyle]="{'color': post.voteCount > 0 ? '#22c55e' : (post.voteCount < 0 ? '#ef4444' : '#222')}
-          " class="reddit-vote-count">
+        <button (click)="upvote(post)" class="reddit-vote-btn upvote">▲</button>
+        <span [ngStyle]="{'color': post.voteCount > 0 ? '#22c55e' : (post.voteCount < 0 ? '#ef4444' : '#222')}" class="reddit-vote-count">
           {{ post.voteCount }}
         </span>
-        <button (click)="upvote(post)" class="reddit-vote-btn upvote">▲</button>
         <button (click)="downvote(post)" class="reddit-vote-btn downvote">▼</button>
         <button class="reddit-comments-btn" (click)="openComments(post)">
           💬 {{ commentsByPost[post.id]?.length || 0 }} Comments
