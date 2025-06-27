@@ -1,0 +1,23 @@
+<div class="container">
+  <h2>Interviews</h2>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Candidate</th>
+        <th>Job Title</th>
+        <th>Date</th>
+        <th>Interviewer</th>
+        <!-- Add more columns as needed -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let interview of mappedInterviews">
+        <td>{{ interview.candidateName }}</td>
+        <td>{{ interview.jobTitle }}</td>
+        <td>{{ interview.scheduledAt }}</td>
+        <td>{{ interview.interviewerName }}</td>
+        <!-- Add more fields as needed -->
+      </tr>
+    </tbody>
+  </table>
+</div>

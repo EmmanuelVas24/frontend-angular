@@ -1,16 +1,17 @@
 <div class="container">
+  <h2>Candidates</h2>
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>Job Title</th>
-        <th>Description</th>
+        <th>Name</th>
+        <th>Email</th>
         <!-- Add more columns as needed -->
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let job of jobs">
-        <td>{{ job.title }}</td>
-        <td>{{ job.description }}</td>
+      <tr *ngFor="let candidate of candidates">
+        <td>{{ candidate.fullName }}</td>
+        <td>{{ candidate.email }}</td>
         <!-- Add more fields as needed -->
       </tr>
     </tbody>
