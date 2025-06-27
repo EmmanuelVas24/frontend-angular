@@ -13,6 +13,14 @@ export class InterviewsComponent implements OnInit {
   jobs: any[] = [];
   candidates: any[] = [];
   mappedInterviews: any[] = [];
+  groupBy: string = '';
+  groupedData: { [key: string]: any[] } = {};
+  groupOptions = [
+    { value: '', label: 'None' },
+    { value: 'interviewerName', label: 'Interviewer' },
+    { value: 'jobTitle', label: 'Job Title' },
+    { value: 'candidateName', label: 'Candidate' }
+  ];
 
   constructor(
     private interviewsService: InterviewsService,
@@ -38,8 +46,26 @@ export class InterviewsComponent implements OnInit {
           candidateName: candidate ? candidate.fullName : 'Unknown'
         };
       });
+      this.updateGrouping();
     }).catch(error => {
       console.error('Error fetching data:', error);
     });
+  }
+
+  onGroupByChange() {
+    this.updateGrouping();
+  }
+
+  updateGrouping() {
+    if (!this.groupBy) {
+      this.groupedData = {};
+      return;
+    }
+    this.groupedData = this.mappedInterviews.reduce((acc, interview) => {
+      const key = interview[this.groupBy] || 'Unknown';
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(interview);
+      return acc;
+    }, {} as { [key: string]: any[] });
   }
 }

@@ -1,23 +1,54 @@
 <div class="container">
   <h2>Interviews</h2>
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Candidate</th>
-        <th>Job Title</th>
-        <th>Date</th>
-        <th>Interviewer</th>
-        <!-- Add more columns as needed -->
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let interview of mappedInterviews">
-        <td>{{ interview.candidateName }}</td>
-        <td>{{ interview.jobTitle }}</td>
-        <td>{{ interview.scheduledAt }}</td>
-        <td>{{ interview.interviewerName }}</td>
-        <!-- Add more fields as needed -->
-      </tr>
-    </tbody>
-  </table>
+  <div class="mb-3">
+    <label for="groupBySelect" class="form-label">Group by:</label>
+    <select id="groupBySelect" class="form-select" [(ngModel)]="groupBy" (change)="onGroupByChange()">
+      <option *ngFor="let option of groupOptions" [value]="option.value">{{ option.label }}</option>
+    </select>
+  </div>
+
+  <ng-container *ngIf="groupBy">
+    <div *ngFor="let group of (groupedData | keyvalue)">
+      <h4>{{ group.key }}</h4>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Job Title</th>
+            <th>Date</th>
+            <th>Interviewer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let interview of group.value">
+            <td>{{ interview.candidateName }}</td>
+            <td>{{ interview.jobTitle }}</td>
+            <td>{{ interview.scheduledAt }}</td>
+            <td>{{ interview.interviewerName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!groupBy">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Job Title</th>
+          <th>Date</th>
+          <th>Interviewer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let interview of mappedInterviews">
+          <td>{{ interview.candidateName }}</td>
+          <td>{{ interview.jobTitle }}</td>
+          <td>{{ interview.scheduledAt }}</td>
+          <td>{{ interview.interviewerName }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
 </div>

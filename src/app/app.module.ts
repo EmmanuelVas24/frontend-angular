@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule, routes } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +24,7 @@ import { CommonModule } from '@angular/common';
     AppRoutingModule,
     NgbModule,
     CommonModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
   exports: [RouterModule],
