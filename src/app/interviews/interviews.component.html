@@ -1,5 +1,19 @@
 <div class="container">
   <h2>Interviews</h2>
+
+  <div class="mb-3">
+    <label for="dslInput" class="form-label">Enter DSL Query for Chart:</label>
+    <textarea id="dslInput" class="form-control" [(ngModel)]="dslQuery" rows="2"></textarea>
+    <button class="btn btn-primary mt-2" (click)="runDSLQuery()">Run Query</button>
+  </div>
+  <div *ngIf="chartData">
+    <!-- Example: Render chart data as a simple list (replace with chart component as needed) -->
+    <h4>Chart Data</h4>
+    <ul>
+      <li *ngFor="let item of chartData">{{ item.name }}: {{ item.value }}</li>
+    </ul>
+  </div>
+
   <div class="mb-3">
     <label for="groupBySelect" class="form-label">Group by:</label>
     <select id="groupBySelect" class="form-select" [(ngModel)]="groupBy" (change)="onGroupByChange()">

@@ -21,6 +21,8 @@ export class InterviewsComponent implements OnInit {
     { value: 'jobTitle', label: 'Job Title' },
     { value: 'candidateName', label: 'Candidate' }
   ];
+  dslQuery: string = '';
+  chartData: any = null;
 
   constructor(
     private interviewsService: InterviewsService,
@@ -67,5 +69,23 @@ export class InterviewsComponent implements OnInit {
       acc[key].push(interview);
       return acc;
     }, {} as { [key: string]: any[] });
+  }
+
+  runDSLQuery() {
+    // Example: CHART BAR GROUP BY interviewerName
+    const match = this.dslQuery.match(/CHART\s+(\w+)\s+GROUP BY\s+(\w+)/i);
+    if (match) {
+      const chartType = match[1].toUpperCase();
+      const groupField = match[2];
+      const grouped = this.mappedInterviews.reduce((acc, curr) => {
+        const key = curr[groupField] || 'Unknown';
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {} as { [key: string]: number });
+      this.chartData = Object.entries(grouped).map(([name, value]) => ({ name, value }));
+      // You can use chartType to select chart rendering logic
+    } else {
+      this.chartData = null;
+    }
   }
 }
